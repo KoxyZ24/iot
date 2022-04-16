@@ -1,24 +1,32 @@
 // définition des broches du décodeur 7 segments
 // (vous pouvez changer les numéros si vous voulez)
+#include <Keypad.h>
+
 const int bit_A = 2;
 const int bit_B = 3;
 const int bit_C = 4;
 const int bit_D = 5;
-const byte rows = 3; //four rows
-const byte cols = 3; //three columns
-char keys[rows][cols] = {
-        {'1', '2', '3'},
-        {'4', '5', '6'},
-        {'7', '8', '9'},
-};
-byte rowPins[rows] = {12, 11, 10}; //connect to the row pinouts of the keypad
-byte colPins[cols] = {9, 8, 14}; //connect to the column pinouts of the keypad
-Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, rows, cols);
+
 // définitions des broches des transistors pour chaque afficheur
 const int alim_ten = 6; // les tens
 const int alim_unity = 7;   // les units
 
+// definitions des broches pave
+const int ROW_NUM = 4; //four rows
+const int COLUMN_NUM = 3; //three columns
+
+char keys[ROW_NUM][COLUMN_NUM] = {
+        {'1', '2', '3'},
+        {'4', '5', '6'},
+        {'7', '8', '9'},
+        {'*', '0', '#'}
+};
+byte pin_rows[ROW_NUM] = {15, 12, 10, 9}; //connect to the row pinouts of the keypad
+byte pin_column[COLUMN_NUM] = {7, 8, 14}; //connect to the column pinouts of the keypad
+Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM);
+
 void setup() {
+    Serial.begin(9600);
     // Les broches sont toutes des sorties
     pinMode(bit_A, OUTPUT);
     pinMode(bit_B, OUTPUT);
@@ -34,32 +42,26 @@ void setup() {
     digitalWrite(bit_D, LOW);
     digitalWrite(alim_ten, LOW);
     digitalWrite(alim_unity, LOW);
+    pinMode(13, OUTPUT);
 }
 
 void loop() // fonction principale
 {
     // boucle qui permet de compter de 0 à 99 (= 100 valeurs)
-    if (disarmaCode())
-        for (char i = 60; i >= 0; i--) {
-            // appel de la fonction affichage avec envoi du number à display
-            display_number(i);
+    for (char i = 15; i >= 0; i--) {
+        // appel de la fonction affichage avec envoi du number à display
+        display_number(i);
+        if (i < 10) {
+            digitalWrite(13, HIGH); //le courant est envoyé sur la borne 0, le buzzer se met à sonner
         }
+    }
+    digitalWrite(13, LOW);
+    tetrisTheme();
     exit(0);
 }
 
-bool disarmaCode(const solve) {
-    int randNum = rand() % (19 - 11 + 1) + 11;
 
-    if (solve == randNum) {
-        return true;
-    } else {
-        return false;
-    }
-    return false;
-}
-
-
-// fonction permettant d'display un number sur deux afficheurs
+// Function who permitt to display numbers on 2 screens
 void display_number(char number) {
     long temps; // variable utilisée pour savoir le temps écoulé...
     char unity = 0, ten = 0; // variable pour chaque afficheur
@@ -70,7 +72,6 @@ void display_number(char number) {
     }
 
     unity = number - (ten * 10); // on récupère les unités
-
     temps = millis(); // on récupère le temps courant
 
     // tant qu'on a pas affiché ce digit pendant au moins 500 millisecondes
@@ -83,7 +84,7 @@ void display_number(char number) {
         // le transistor de l'afficheur des tens est saturé,
         // donc l'afficheur est allumé
         digitalWrite(alim_ten, HIGH);
-// on appel la fonction qui permet d'display le digit ten
+        // on appel la fonction qui permet d'display le digit ten
         display(ten);
         // l'autre transistor est bloqué et l'afficheur éteint
         digitalWrite(alim_unity, LOW);
@@ -125,4 +126,85 @@ void display(char digit) {
         digitalWrite(bit_A, HIGH);
         digit = digit - 1;
     }
+}
+
+void tetrisTheme() {
+    tone(13, 2637, 200);
+    delay(400);
+    tone(13, 1975, 200);
+    delay(200);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 2349, 200);
+    delay(400);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 1975, 200);
+    delay(200);
+    tone(13, 1760, 200);
+    delay(400);
+    tone(13, 1760, 200);
+    delay(200);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 2637, 200);
+    delay(400);
+    tone(13, 2349, 200);
+    delay(200);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 1975, 200);
+    delay(400);
+    tone(13, 1975, 200);
+    delay(200);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 2349, 200);
+    delay(400);
+    tone(13, 2637, 200);
+    delay(400);
+    tone(13, 2093, 200);
+    delay(400);
+    tone(13, 1760, 200);
+    delay(400);
+    tone(13, 1760, 200);
+    delay(800);
+    tone(13, 1760, 200);
+    delay(400);
+    tone(13, 2349, 200);
+    delay(200);
+    tone(13, 2794, 200);
+    delay(200);
+    tone(13, 3520, 200);
+    delay(400);
+    tone(13, 3136, 200);
+    delay(200);
+    tone(13, 2794, 200);
+    delay(200);
+    tone(13, 2637, 200);
+    delay(600);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 2637, 200);
+    delay(400);
+    tone(13, 2349, 200);
+    delay(200);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 1975, 200);
+    delay(400);
+    tone(13, 1975, 200);
+    delay(200);
+    tone(13, 2093, 200);
+    delay(200);
+    tone(13, 2349, 200);
+    delay(400);
+    tone(13, 2637, 200);
+    delay(400);
+    tone(13, 2093, 200);
+    delay(400);
+    tone(13, 1760, 200);
+    delay(400);
+    tone(13, 1760, 200);
+    delay(800);
 }
