@@ -82,6 +82,7 @@ void countdown() {
             Serial.println("\nKABOOM!(Yes, you die)");
             tetrisTheme();
             exit(0);
+            break;
     }
 }
 
