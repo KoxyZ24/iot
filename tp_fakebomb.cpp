@@ -25,6 +25,8 @@ byte pin_rows[ROW_NUM] = {12, 11, 10, 9}; //connect to the row pinouts of the ke
 byte pin_column[COLUMN_NUM] = {8, 14, 15}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM);
 
+
+// setup func
 void setup() {
     Serial.begin(9600);
     pinMode(bit_A, OUTPUT);
@@ -44,35 +46,56 @@ void setup() {
     Serial.println("Press * to start !");
 }
 
+//loop
 void loop() {
     char key = keypad.getKey();
     if (key == '*') {
-        Serial.print("\nEnter Password : ");
-        while (currentLength < 4) {
-            char key2 = keypad.getKey();
-            countdown();
-            if (key2 != NO_KEY) {
-                Serial.print(key2);
-                entered[currentLength] = key2;
-                currentLength++;
-            }
+        randomPassword();
+        passSolver();
+    }
+}
+
+// main func
+void passSolver() { // 0000
+    Serial.print("\nEnter Password : ");
+    while (currentLength < 4) {
+        char key2 = keypad.getKey();
+       // countdown(); // 60 to 00 and KABOOM !!!
+        if (key2 != NO_KEY) {
+            Serial.print(key2);
+            entered[currentLength] = key2;
+            currentLength++;
         }
-        if (currentLength == 4) { // Password 0000 (yes yes its secure)
-            if (entered[0] == '0' && entered[1] == '0' && entered[2] == '0' && entered[3] == '0') {
-                Serial.println("\nWell play you survive");
-                exit(0);
-                tetrisTheme();
-            } else {
-                Serial.println("\nWrong Password! Press * to retry.");
-                currentLength = 0;
-            }
+    }
+    if (currentLength == 4) {
+        if (entered[0] == password[0] && entered[1] == password[1] && entered[2] == password[2] &&
+            entered[3] == password[3]) {
+            Serial.println("\nWell play you survive");
+            tetrisTheme();
+            exit(0);
+        } else {
+            Serial.println("\nWrong Password! Press * to retry.");
+            currentLength = 0;
         }
     }
 }
 
+void randomPassword() {
+    char annex[10] = {'0', '1', '2',
+                      '3', '4', '5',
+                      '6', '7', '8',
+                      '9'};
+    for (char i = 0; i < 4; i++) {
+        int iRand = (rand() % 9) + 1;
+        password[i] = annex[iRand];
+    }
+    Serial.println(password);
+}
+
+// 60 second to 0 and... KABOOM
 void countdown() {
     second--;
-    display_number(second);
+    displayNumber(second);
     switch (second) {
         case 10:
             tone(13, 3136, 200);
@@ -87,7 +110,7 @@ void countdown() {
 }
 
 // Function who permit displaying numbers on 2 screens
-void display_number(char number) {
+void displayNumber(char number) {
     long temps; // variable used to know the elapsed time
     char unity = 0, ten = 0; // variable for each display
 
@@ -113,6 +136,7 @@ void display_number(char number) {
     }
 }
 
+//displaying number on 1 screen
 void display(char digit) {
     digitalWrite(bit_A, LOW);
     digitalWrite(bit_B, LOW);
