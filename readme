@@ -1,0 +1,9 @@
+Bonjour ici le groupe GIOUGIN,
+suite à l'annonce d'une découverte d'une bombe dans le moodle d'IOT nous somme donc intervenue afin de créer un système de désarmoçage.
+Notre groupe d'intervention est constitué du Caporal Chef PHERON Mathieu et du Sergent Chef BAUDRIN Corentin.
+
+Le code ne permet pas de faire en simultaner le décompte du timer ainsi que la saisie du mot de passe sachant cela si vous voulez le timer il faudra décommenter 
+la ligne 63 correspondant au "countdown", faites attention cela pourrait être votre "final countdow".
+
+
+Merci de nous avoir lu nous vous souhaitons le plus grand courage afin de désarmorcer "Satan2" qui est la bombe.
